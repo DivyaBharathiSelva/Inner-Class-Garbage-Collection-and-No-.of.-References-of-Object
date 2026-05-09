@@ -1,0 +1,57 @@
+import sys
+import gc
+
+class Company:
+    def __init__(self, cname):
+        self.cname = cname
+        self.employees = []
+    class Employee:
+        def __init__(self, emp_id, emp_name, company):
+            self.emp_id = emp_id
+            self.emp_name = emp_name
+            self.company = company
+        def display_details(self):
+            print("Employee ID:", self.emp_id)
+            print("Employee Name:", self.emp_name)
+            print("Company Name:", self.company.cname)
+            print("----------------------")
+    def add_employee(self, emp_id, emp_name):
+        emp = self.Employee(emp_id, emp_name, self)
+        self.employees.append(emp)
+        print(emp_name, "added to company")
+        print("Employee Ref Count:", sys.getrefcount(emp))
+        print("Company Ref Count:", sys.getrefcount(self))
+    def remove_employee(self, emp_id):
+        for emp in self.employees:
+            if emp.emp_id == emp_id:
+                self.employees.remove(emp)
+                print(emp.emp_name, "removed from company")
+                print("Ref count before delete:", sys.getrefcount(emp))
+                del emp
+                gc.collect()
+                print("Garbage collected")
+                return
+        print("Employee not found")
+    def display_all(self):
+        if len(self.employees) == 0:
+            print("No employees")
+        else:
+            for emp in self.employees:
+                emp.display_details()
+cname = input("Enter company name: ")
+c = Company(cname)
+n = int(input("Enter number of employees: "))
+for i in range(n):
+    print("Enter details of employee", i+1)
+    eid = int(input("Enter ID: "))
+    ename = input("Enter Name: ")
+    c.add_employee(eid, ename)
+print("\nEmployee List:")
+c.display_all()
+r = int(input("\nEnter number of employees to remove: "))
+for i in range(r):
+    eid = int(input("Enter ID to remove: "))
+    c.remove_employee(eid)
+print("\nAfter Removal:")
+c.display_all()
+gc.collect()
