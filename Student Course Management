@@ -1,0 +1,42 @@
+import gc
+class Student:
+    class Course:	
+              def __init__(self, cname, duration):
+            self.cname = cname
+            self.duration = duration
+        def display(self):
+            print("Course:", self.cname)
+            print("Duration:", self.duration)
+    def __init__(self, sid, name, cname, duration):
+        self.sid = sid
+        self.name = name
+        self.course = self.Course(cname, duration)
+    def display(self):
+        print("Student ID:", self.sid)
+        print("Name:", self.name)
+        self.course.display()
+        print("------------------")
+    def __del__(self):
+        print(self.name, "course dropped")
+students = []
+n = int(input("Enter number of students: "))
+for i in range(n):
+    sid = int(input("Enter ID: "))
+    name = input("Enter Name: ")
+    cname = input("Enter Course: ")
+    duration = input("Enter Duration: ")
+    s = Student(sid, name, cname, duration)
+    students.append(s)
+print("\nStudent Details")
+for s in students:
+    s.display()
+rid = int(input("Enter ID to drop course: "))
+for s in students:
+    if s.sid == rid:
+        students.remove(s)
+        del s
+        gc.collect()
+        break
+print("\nAfter Drop")
+for s in students:
+    s.display()
